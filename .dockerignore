@@ -1,0 +1,20 @@
+# Git
+.git
+.gitignore
+.github
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Build artifacts
+bin/
+coverage/
+
+# IDE files
+.idea/
+.vscode/
+
+# Misc
+README.md
+LICENSE 

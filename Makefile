@@ -1,4 +1,4 @@
-.PHONY: build run clean test test-coverage
+.PHONY: build run clean test test-coverage docker-build docker-run docker-compose docker-clean
 
 # Build the application
 build:
@@ -26,6 +26,23 @@ test-coverage:
 # Install the application
 install: build
 	cp bin/goflow /usr/local/bin/
+
+# Build Docker image
+docker-build:
+	docker build -t goflow:latest .
+
+# Run Docker container
+docker-run: docker-build
+	docker run --rm goflow:latest
+
+# Run with Docker Compose
+docker-compose:
+	docker-compose up --build
+
+# Clean Docker resources
+docker-clean:
+	docker-compose down
+	docker rmi goflow:latest
 
 # Default target
 all: build 

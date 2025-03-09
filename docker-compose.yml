@@ -1,0 +1,23 @@
+services:
+  goflow:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: goflow
+    volumes:
+      - ./examples:/root/examples
+    command: ["run", "-file", "examples/order_process.json"]
+    # If you need to run a different workflow, you can override the command:
+    # command: ["run", "-file", "examples/file_processing.json"]
+
+  # Example of how to add a service that uses goflow as a dependency
+  # worker:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: goflow-worker
+  #   volumes:
+  #     - ./examples:/root/examples
+  #   command: ["run", "-file", "examples/email_verification.json"]
+  #   depends_on:
+  #     - goflow

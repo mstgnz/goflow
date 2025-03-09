@@ -124,6 +124,27 @@ make build
 make run
 ```
 
+### **Docker Support**
+
+You can also run goflow using Docker:
+
+```bash
+# Build the Docker image
+make docker-build
+
+# Run the Docker container
+make docker-run
+
+# Or use Docker Compose
+make docker-compose
+```
+
+To run a specific workflow with Docker:
+
+```bash
+docker run --rm -v $(pwd)/examples:/root/examples goflow:latest run -file examples/file_processing.json
+```
+
 ### **Adding Your Own Tasks**
 
 To add your own tasks, create a new file in the `pkg/tasks` directory and define a structure that implements the `Task` interface:
@@ -174,6 +195,8 @@ goflow/
 │       └── engine.go     # Main workflow engine
 ├── examples/             # Example workflow definitions
 │   └── order_process.json # Example order process
+├── Dockerfile            # Docker configuration
+├── docker-compose.yml    # Docker Compose configuration
 ├── Makefile              # Build and run commands
 └── README.md             # Project documentation
 ```
