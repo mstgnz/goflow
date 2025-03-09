@@ -13,7 +13,7 @@ type MockTask struct {
 	name     string
 	executed bool
 	params   map[string]string
-	result   map[string]interface{}
+	result   map[string]any
 	err      error
 }
 
@@ -21,7 +21,7 @@ func (t *MockTask) Name() string {
 	return t.name
 }
 
-func (t *MockTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) {
+func (t *MockTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error) {
 	t.executed = true
 	t.params = params
 	return t.result, t.err
@@ -55,7 +55,7 @@ func TestTaskRegistration(t *testing.T) {
 	engine := NewEngine()
 
 	// Register a task
-	task := &MockTask{name: "mock_task", result: map[string]interface{}{"success": true}}
+	task := &MockTask{name: "mock_task", result: map[string]any{"success": true}}
 	engine.RegisterTask(task)
 
 	// Verify the task is registered
@@ -153,8 +153,8 @@ func TestWorkflowExecution(t *testing.T) {
 	engine := NewEngine()
 
 	// Register mock tasks
-	task1 := &MockTask{name: "task1", result: map[string]interface{}{"success": true}}
-	task2 := &MockTask{name: "task2", result: map[string]interface{}{"success": true}}
+	task1 := &MockTask{name: "task1", result: map[string]any{"success": true}}
+	task2 := &MockTask{name: "task2", result: map[string]any{"success": true}}
 	engine.RegisterTask(task1)
 	engine.RegisterTask(task2)
 
@@ -237,7 +237,7 @@ func TestConditionEvaluation(t *testing.T) {
 	// Add a step result with success=true
 	state.StepResults["step1"] = models.StepResult{
 		Success: true,
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"success": true,
 			"value":   123,
 		},

@@ -16,7 +16,7 @@ func (t *SendEmailTask) Name() string {
 	return "send_email"
 }
 
-func (t *SendEmailTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) {
+func (t *SendEmailTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error) {
 	template, ok := params["template"]
 	if !ok {
 		return nil, errors.New("template parameter is required")
@@ -28,7 +28,7 @@ func (t *SendEmailTask) Execute(ctx context.Context, params map[string]string, s
 	// Simulate some work
 	time.Sleep(500 * time.Millisecond)
 
-	return map[string]interface{}{
+	return map[string]any{
 		"sent":     true,
 		"template": template,
 		"time":     time.Now().Format(time.RFC3339),
@@ -42,7 +42,7 @@ func (t *ProcessPaymentTask) Name() string {
 	return "process_payment"
 }
 
-func (t *ProcessPaymentTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) {
+func (t *ProcessPaymentTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error) {
 	amount, ok := params["amount"]
 	if !ok {
 		return nil, errors.New("amount parameter is required")
@@ -57,7 +57,7 @@ func (t *ProcessPaymentTask) Execute(ctx context.Context, params map[string]stri
 	// Simulate success (in a real implementation, this could fail)
 	success := true
 
-	return map[string]interface{}{
+	return map[string]any{
 		"success": success,
 		"amount":  amount,
 		"time":    time.Now().Format(time.RFC3339),
@@ -71,14 +71,14 @@ func (t *PackItemsTask) Name() string {
 	return "pack_items"
 }
 
-func (t *PackItemsTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) {
+func (t *PackItemsTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error) {
 	// In a real implementation, this would interact with an inventory system
 	fmt.Println("Packing items for order")
 
 	// Simulate some work
 	time.Sleep(1500 * time.Millisecond)
 
-	return map[string]interface{}{
+	return map[string]any{
 		"packed": true,
 		"time":   time.Now().Format(time.RFC3339),
 	}, nil
@@ -91,14 +91,14 @@ func (t *SendShippingNotificationTask) Name() string {
 	return "send_shipping_notification"
 }
 
-func (t *SendShippingNotificationTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) {
+func (t *SendShippingNotificationTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error) {
 	// In a real implementation, this would send an actual notification
 	fmt.Println("Sending shipping notification")
 
 	// Simulate some work
 	time.Sleep(500 * time.Millisecond)
 
-	return map[string]interface{}{
+	return map[string]any{
 		"sent": true,
 		"time": time.Now().Format(time.RFC3339),
 	}, nil

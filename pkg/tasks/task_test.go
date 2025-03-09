@@ -18,10 +18,10 @@ func (t *MockTask) Name() string {
 	return t.name
 }
 
-func (t *MockTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) {
+func (t *MockTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error) {
 	t.executed = true
 	t.params = params
-	return map[string]interface{}{
+	return map[string]any{
 		"success": true,
 		"mock":    "data",
 	}, nil

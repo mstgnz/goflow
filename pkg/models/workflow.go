@@ -28,7 +28,7 @@ type WorkflowState struct {
 
 // StepResult represents the result of a step execution
 type StepResult struct {
-	Success bool                   `json:"success"`
-	Data    map[string]interface{} `json:"data,omitempty"`
-	Error   string                 `json:"error,omitempty"`
+	Success bool           `json:"success"`
+	Data    map[string]any `json:"data,omitempty"`
+	Error   string         `json:"error,omitempty"`
 }

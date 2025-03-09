@@ -204,7 +204,7 @@ func (t *ValidateFileTask) Name() string <span class="cov8" title="1">{
         return "validate_file"
 }</span>
 
-func (t *ValidateFileTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) <span class="cov8" title="1">{
+func (t *ValidateFileTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error) <span class="cov8" title="1">{
         filePath, ok := params["file_path"]
         if !ok </span><span class="cov8" title="1">{
                 return nil, errors.New("file_path parameter is required")
@@ -219,7 +219,7 @@ func (t *ValidateFileTask) Execute(ctx context.Context, params map[string]string
         // Simulate validation (in a real implementation, this could fail)
         valid := true
 
-        return map[string]interface{}{
+        return map[string]any{
                 "valid":     valid,
                 "file_path": filePath,
                 "time":      time.Now().Format(time.RFC3339),
@@ -233,7 +233,7 @@ func (t *ProcessFileTask) Name() string <span class="cov8" title="1">{
         return "process_file"
 }</span>
 
-func (t *ProcessFileTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) <span class="cov8" title="1">{
+func (t *ProcessFileTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error) <span class="cov8" title="1">{
         filePath, ok := params["file_path"]
         if !ok </span><span class="cov8" title="1">{
                 return nil, errors.New("file_path parameter is required")
@@ -248,7 +248,7 @@ func (t *ProcessFileTask) Execute(ctx context.Context, params map[string]string,
         // Simulate processing (in a real implementation, this could fail)
         processed := true
 
-        return map[string]interface{}{
+        return map[string]any{
                 "processed": processed,
                 "file_path": filePath,
                 "records":   100, // Simulated number of records processed
@@ -263,7 +263,7 @@ func (t *SaveToDatabaseTask) Name() string <span class="cov8" title="1">{
         return "save_to_database"
 }</span>
 
-func (t *SaveToDatabaseTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) <span class="cov8" title="1">{
+func (t *SaveToDatabaseTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error) <span class="cov8" title="1">{
         // In a real implementation, this would save data to a database
         fmt.Println("Saving data to database")
 
@@ -280,7 +280,7 @@ func (t *SaveToDatabaseTask) Execute(ctx context.Context, params map[string]stri
         // Simulate some work
         <span class="cov8" title="1">time.Sleep(1500 * time.Millisecond)
 
-        return map[string]interface{}{
+        return map[string]any{
                 "saved":   true,
                 "records": records,
                 "time":    time.Now().Format(time.RFC3339),
@@ -306,7 +306,7 @@ func (t *SendEmailTask) Name() string <span class="cov8" title="1">{
         return "send_email"
 }</span>
 
-func (t *SendEmailTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) <span class="cov8" title="1">{
+func (t *SendEmailTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error) <span class="cov8" title="1">{
         template, ok := params["template"]
         if !ok </span><span class="cov8" title="1">{
                 return nil, errors.New("template parameter is required")
@@ -318,7 +318,7 @@ func (t *SendEmailTask) Execute(ctx context.Context, params map[string]string, s
         // Simulate some work
         time.Sleep(500 * time.Millisecond)
 
-        return map[string]interface{}{
+        return map[string]any{
                 "sent":     true,
                 "template": template,
                 "time":     time.Now().Format(time.RFC3339),
@@ -332,7 +332,7 @@ func (t *ProcessPaymentTask) Name() string <span class="cov8" title="1">{
         return "process_payment"
 }</span>
 
-func (t *ProcessPaymentTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) <span class="cov8" title="1">{
+func (t *ProcessPaymentTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error) <span class="cov8" title="1">{
         amount, ok := params["amount"]
         if !ok </span><span class="cov8" title="1">{
                 return nil, errors.New("amount parameter is required")
@@ -347,7 +347,7 @@ func (t *ProcessPaymentTask) Execute(ctx context.Context, params map[string]stri
         // Simulate success (in a real implementation, this could fail)
         success := true
 
-        return map[string]interface{}{
+        return map[string]any{
                 "success": success,
                 "amount":  amount,
                 "time":    time.Now().Format(time.RFC3339),
@@ -361,14 +361,14 @@ func (t *PackItemsTask) Name() string <span class="cov8" title="1">{
         return "pack_items"
 }</span>
 
-func (t *PackItemsTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) <span class="cov8" title="1">{
+func (t *PackItemsTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error) <span class="cov8" title="1">{
         // In a real implementation, this would interact with an inventory system
         fmt.Println("Packing items for order")
 
         // Simulate some work
         time.Sleep(1500 * time.Millisecond)
 
-        return map[string]interface{}{
+        return map[string]any{
                 "packed": true,
                 "time":   time.Now().Format(time.RFC3339),
         }, nil
@@ -381,14 +381,14 @@ func (t *SendShippingNotificationTask) Name() string <span class="cov8" title="1
         return "send_shipping_notification"
 }</span>
 
-func (t *SendShippingNotificationTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) <span class="cov8" title="1">{
+func (t *SendShippingNotificationTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error) <span class="cov8" title="1">{
         // In a real implementation, this would send an actual notification
         fmt.Println("Sending shipping notification")
 
         // Simulate some work
         time.Sleep(500 * time.Millisecond)
 
-        return map[string]interface{}{
+        return map[string]any{
                 "sent": true,
                 "time": time.Now().Format(time.RFC3339),
         }, nil
@@ -406,7 +406,7 @@ import (
 // Task is the interface that all tasks must implement
 type Task interface {
         // Execute runs the task with the given parameters and returns a result
-        Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error)
+        Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error)
         // Name returns the name of the task
         Name() string
 }

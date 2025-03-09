@@ -9,7 +9,7 @@ import (
 // Task is the interface that all tasks must implement
 type Task interface {
 	// Execute runs the task with the given parameters and returns a result
-	Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error)
+	Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error)
 	// Name returns the name of the task
 	Name() string
 }

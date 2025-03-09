@@ -143,9 +143,9 @@ func (t *MyCustomTask) Name() string {
 	return "my_custom_task"
 }
 
-func (t *MyCustomTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) {
+func (t *MyCustomTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error) {
 	// Implement the functionality of the task here
-	return map[string]interface{}{
+	return map[string]any{
 		"success": true,
 	}, nil
 }

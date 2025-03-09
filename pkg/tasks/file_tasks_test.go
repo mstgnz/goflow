@@ -126,7 +126,7 @@ func TestSaveToDatabaseTask(t *testing.T) {
 	// Add a previous step result with records
 	state.StepResults["process"] = models.StepResult{
 		Success: true,
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"records": 100,
 		},
 	}

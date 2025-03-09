@@ -90,7 +90,7 @@ func TestWorkflowState(t *testing.T) {
 	// Add a step result
 	state.StepResults["step1"] = StepResult{
 		Success: true,
-		Data: map[string]interface{}{
+		Data: map[string]any{
 			"key1": "value1",
 			"key2": 123,
 		},

@@ -16,7 +16,7 @@ func (t *ValidateFileTask) Name() string {
 	return "validate_file"
 }
 
-func (t *ValidateFileTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) {
+func (t *ValidateFileTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error) {
 	filePath, ok := params["file_path"]
 	if !ok {
 		return nil, errors.New("file_path parameter is required")
@@ -31,7 +31,7 @@ func (t *ValidateFileTask) Execute(ctx context.Context, params map[string]string
 	// Simulate validation (in a real implementation, this could fail)
 	valid := true
 
-	return map[string]interface{}{
+	return map[string]any{
 		"valid":     valid,
 		"file_path": filePath,
 		"time":      time.Now().Format(time.RFC3339),
@@ -45,7 +45,7 @@ func (t *ProcessFileTask) Name() string {
 	return "process_file"
 }
 
-func (t *ProcessFileTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) {
+func (t *ProcessFileTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error) {
 	filePath, ok := params["file_path"]
 	if !ok {
 		return nil, errors.New("file_path parameter is required")
@@ -60,7 +60,7 @@ func (t *ProcessFileTask) Execute(ctx context.Context, params map[string]string,
 	// Simulate processing (in a real implementation, this could fail)
 	processed := true
 
-	return map[string]interface{}{
+	return map[string]any{
 		"processed": processed,
 		"file_path": filePath,
 		"records":   100, // Simulated number of records processed
@@ -75,7 +75,7 @@ func (t *SaveToDatabaseTask) Name() string {
 	return "save_to_database"
 }
 
-func (t *SaveToDatabaseTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) {
+func (t *SaveToDatabaseTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]any, error) {
 	// In a real implementation, this would save data to a database
 	fmt.Println("Saving data to database")
 
@@ -92,7 +92,7 @@ func (t *SaveToDatabaseTask) Execute(ctx context.Context, params map[string]stri
 	// Simulate some work
 	time.Sleep(1500 * time.Millisecond)
 
-	return map[string]interface{}{
+	return map[string]any{
 		"saved":   true,
 		"records": records,
 		"time":    time.Now().Format(time.RFC3339),
