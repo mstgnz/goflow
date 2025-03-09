@@ -1,0 +1,29 @@
+{
+  "name": "email_verification",
+  "steps": [
+    {
+      "id": "register",
+      "task": "send_email",
+      "next": ["verify"],
+      "params": {
+        "template": "verification_code"
+      }
+    },
+    {
+      "id": "verify",
+      "task": "process_payment",
+      "next": ["activate"],
+      "params": {
+        "amount": "0.00"
+      }
+    },
+    {
+      "id": "activate",
+      "task": "send_email",
+      "condition": "verify.success",
+      "params": {
+        "template": "account_activated"
+      }
+    }
+  ]
+} 

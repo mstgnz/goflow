@@ -1,0 +1,35 @@
+{
+  "name": "file_processing",
+  "steps": [
+    {
+      "id": "validate",
+      "task": "validate_file",
+      "next": ["process"],
+      "params": {
+        "file_path": "/path/to/data.csv"
+      }
+    },
+    {
+      "id": "process",
+      "task": "process_file",
+      "next": ["save"],
+      "condition": "validate.valid",
+      "params": {
+        "file_path": "/path/to/data.csv"
+      }
+    },
+    {
+      "id": "save",
+      "task": "save_to_database",
+      "next": ["notify"],
+      "condition": "process.processed"
+    },
+    {
+      "id": "notify",
+      "task": "send_email",
+      "params": {
+        "template": "processing_complete"
+      }
+    }
+  ]
+} 

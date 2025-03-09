@@ -1,0 +1,31 @@
+{
+  "name": "order_process",
+  "steps": [
+    {
+      "id": "payment",
+      "task": "process_payment",
+      "next": ["prepare_order"],
+      "params": {
+        "amount": "100.00"
+      }
+    },
+    {
+      "id": "prepare_order",
+      "task": "pack_items",
+      "next": ["ship_order"],
+      "condition": "payment.success"
+    },
+    {
+      "id": "ship_order",
+      "task": "send_shipping_notification",
+      "next": ["thank_you"]
+    },
+    {
+      "id": "thank_you",
+      "task": "send_email",
+      "params": {
+        "template": "thank_you"
+      }
+    }
+  ]
+} 
