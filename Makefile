@@ -1,4 +1,4 @@
-.PHONY: build run clean test
+.PHONY: build run clean test test-coverage
 
 # Build the application
 build:
@@ -11,10 +11,17 @@ run: build
 # Clean build artifacts
 clean:
 	rm -rf bin/
+	rm -rf coverage/
 
 # Run tests
 test:
 	go test -v ./...
+
+# Run tests with coverage
+test-coverage:
+	mkdir -p coverage
+	go test -v -coverprofile=coverage/coverage.out ./...
+	go tool cover -html=coverage/coverage.out -o coverage/coverage.html
 
 # Install the application
 install: build
