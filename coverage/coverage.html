@@ -1,0 +1,723 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>cmd: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/mstgnz/goflow/cmd/main.go (17.4%)</option>
+				
+				<option value="file1">github.com/mstgnz/goflow/pkg/tasks/file_tasks.go (100.0%)</option>
+				
+				<option value="file2">github.com/mstgnz/goflow/pkg/tasks/sample_tasks.go (100.0%)</option>
+				
+				<option value="file3">github.com/mstgnz/goflow/pkg/tasks/task.go (100.0%)</option>
+				
+				<option value="file4">github.com/mstgnz/goflow/pkg/workflow/engine.go (82.6%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package main
+
+import (
+        "encoding/json"
+        "flag"
+        "fmt"
+        "os"
+
+        "github.com/mstgnz/goflow/pkg/workflow"
+)
+
+func main() <span class="cov0" title="0">{
+        // Define command-line flags
+        runCmd := flag.NewFlagSet("run", flag.ExitOnError)
+        runFile := runCmd.String("file", "", "Path to the workflow file")
+
+        // Parse command-line arguments
+        if len(os.Args) &lt; 2 </span><span class="cov0" title="0">{
+                printUsage()
+                os.Exit(1)
+        }</span>
+
+        // Handle commands
+        <span class="cov0" title="0">switch os.Args[1] </span>{
+        case "run":<span class="cov0" title="0">
+                err := runCmd.Parse(os.Args[2:])
+                if err != nil </span><span class="cov0" title="0">{
+                        fmt.Fprintf(os.Stderr, "Error parsing arguments: %v\n", err)
+                        os.Exit(1)
+                }</span>
+
+                <span class="cov0" title="0">if *runFile == "" </span><span class="cov0" title="0">{
+                        fmt.Fprintf(os.Stderr, "Error: -file flag is required\n")
+                        runCmd.Usage()
+                        os.Exit(1)
+                }</span>
+
+                <span class="cov0" title="0">runWorkflow(*runFile)</span>
+        default:<span class="cov0" title="0">
+                printUsage()
+                os.Exit(1)</span>
+        }
+}
+
+func printUsage() <span class="cov0" title="0">{
+        fmt.Println("Usage:")
+        fmt.Println("  goflow run -file &lt;workflow-file&gt;")
+}</span>
+
+func runWorkflow(filePath string) <span class="cov0" title="0">{
+        // Create a new workflow engine
+        engine := workflow.NewEngine()
+
+        // Register default tasks
+        engine.RegisterDefaultTasks()
+
+        // Load the workflow
+        err := engine.Load(filePath)
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Fprintf(os.Stderr, "Error loading workflow: %v\n", err)
+                os.Exit(1)
+        }</span>
+
+        // Get the workflow name from the file
+        <span class="cov0" title="0">workflowName := getWorkflowNameFromFile(filePath)
+        if workflowName == "" </span><span class="cov0" title="0">{
+                fmt.Fprintf(os.Stderr, "Error: could not determine workflow name\n")
+                os.Exit(1)
+        }</span>
+
+        // Run the workflow
+        <span class="cov0" title="0">fmt.Printf("Running workflow: %s\n", workflowName)
+        state, err := engine.Run(workflowName)
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Fprintf(os.Stderr, "Error running workflow: %v\n", err)
+                os.Exit(1)
+        }</span>
+
+        // Print the result
+        <span class="cov0" title="0">fmt.Printf("Workflow completed with status: %s\n", state.Status)
+
+        // Print the step results
+        fmt.Println("Step results:")
+        for stepID, result := range state.StepResults </span><span class="cov0" title="0">{
+                fmt.Printf("  %s: %v\n", stepID, result.Success)
+        }</span>
+}
+
+func getWorkflowNameFromFile(filePath string) string <span class="cov8" title="1">{
+        // Read the file
+        data, err := os.ReadFile(filePath)
+        if err != nil </span><span class="cov8" title="1">{
+                return ""
+        }</span>
+
+        // Parse the JSON
+        <span class="cov8" title="1">var workflow struct {
+                Name string `json:"name"`
+        }
+
+        err = json.Unmarshal(data, &amp;workflow)
+        if err != nil </span><span class="cov8" title="1">{
+                return ""
+        }</span>
+
+        <span class="cov8" title="1">return workflow.Name</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package tasks
+
+import (
+        "context"
+        "errors"
+        "fmt"
+        "time"
+
+        "github.com/mstgnz/goflow/pkg/models"
+)
+
+// ValidateFileTask validates a file
+type ValidateFileTask struct{}
+
+func (t *ValidateFileTask) Name() string <span class="cov8" title="1">{
+        return "validate_file"
+}</span>
+
+func (t *ValidateFileTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) <span class="cov8" title="1">{
+        filePath, ok := params["file_path"]
+        if !ok </span><span class="cov8" title="1">{
+                return nil, errors.New("file_path parameter is required")
+        }</span>
+
+        // In a real implementation, this would validate the file
+        <span class="cov8" title="1">fmt.Printf("Validating file: %s\n", filePath)
+
+        // Simulate some work
+        time.Sleep(1 * time.Second)
+
+        // Simulate validation (in a real implementation, this could fail)
+        valid := true
+
+        return map[string]interface{}{
+                "valid":     valid,
+                "file_path": filePath,
+                "time":      time.Now().Format(time.RFC3339),
+        }, nil</span>
+}
+
+// ProcessFileTask processes a file
+type ProcessFileTask struct{}
+
+func (t *ProcessFileTask) Name() string <span class="cov8" title="1">{
+        return "process_file"
+}</span>
+
+func (t *ProcessFileTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) <span class="cov8" title="1">{
+        filePath, ok := params["file_path"]
+        if !ok </span><span class="cov8" title="1">{
+                return nil, errors.New("file_path parameter is required")
+        }</span>
+
+        // In a real implementation, this would process the file
+        <span class="cov8" title="1">fmt.Printf("Processing file: %s\n", filePath)
+
+        // Simulate some work
+        time.Sleep(2 * time.Second)
+
+        // Simulate processing (in a real implementation, this could fail)
+        processed := true
+
+        return map[string]interface{}{
+                "processed": processed,
+                "file_path": filePath,
+                "records":   100, // Simulated number of records processed
+                "time":      time.Now().Format(time.RFC3339),
+        }, nil</span>
+}
+
+// SaveToDatabaseTask saves data to a database
+type SaveToDatabaseTask struct{}
+
+func (t *SaveToDatabaseTask) Name() string <span class="cov8" title="1">{
+        return "save_to_database"
+}</span>
+
+func (t *SaveToDatabaseTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) <span class="cov8" title="1">{
+        // In a real implementation, this would save data to a database
+        fmt.Println("Saving data to database")
+
+        // Get the number of records from the previous step
+        var records int
+        if result, ok := state.StepResults["process"]; ok </span><span class="cov8" title="1">{
+                if recordsVal, ok := result.Data["records"]; ok </span><span class="cov8" title="1">{
+                        if recordsInt, ok := recordsVal.(int); ok </span><span class="cov8" title="1">{
+                                records = recordsInt
+                        }</span>
+                }
+        }
+
+        // Simulate some work
+        <span class="cov8" title="1">time.Sleep(1500 * time.Millisecond)
+
+        return map[string]interface{}{
+                "saved":   true,
+                "records": records,
+                "time":    time.Now().Format(time.RFC3339),
+        }, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package tasks
+
+import (
+        "context"
+        "errors"
+        "fmt"
+        "time"
+
+        "github.com/mstgnz/goflow/pkg/models"
+)
+
+// SendEmailTask sends an email
+type SendEmailTask struct{}
+
+func (t *SendEmailTask) Name() string <span class="cov8" title="1">{
+        return "send_email"
+}</span>
+
+func (t *SendEmailTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) <span class="cov8" title="1">{
+        template, ok := params["template"]
+        if !ok </span><span class="cov8" title="1">{
+                return nil, errors.New("template parameter is required")
+        }</span>
+
+        // In a real implementation, this would send an actual email
+        <span class="cov8" title="1">fmt.Printf("Sending email with template: %s\n", template)
+
+        // Simulate some work
+        time.Sleep(500 * time.Millisecond)
+
+        return map[string]interface{}{
+                "sent":     true,
+                "template": template,
+                "time":     time.Now().Format(time.RFC3339),
+        }, nil</span>
+}
+
+// ProcessPaymentTask processes a payment
+type ProcessPaymentTask struct{}
+
+func (t *ProcessPaymentTask) Name() string <span class="cov8" title="1">{
+        return "process_payment"
+}</span>
+
+func (t *ProcessPaymentTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) <span class="cov8" title="1">{
+        amount, ok := params["amount"]
+        if !ok </span><span class="cov8" title="1">{
+                return nil, errors.New("amount parameter is required")
+        }</span>
+
+        // In a real implementation, this would process an actual payment
+        <span class="cov8" title="1">fmt.Printf("Processing payment of amount: %s\n", amount)
+
+        // Simulate some work
+        time.Sleep(1 * time.Second)
+
+        // Simulate success (in a real implementation, this could fail)
+        success := true
+
+        return map[string]interface{}{
+                "success": success,
+                "amount":  amount,
+                "time":    time.Now().Format(time.RFC3339),
+        }, nil</span>
+}
+
+// PackItemsTask packs items for an order
+type PackItemsTask struct{}
+
+func (t *PackItemsTask) Name() string <span class="cov8" title="1">{
+        return "pack_items"
+}</span>
+
+func (t *PackItemsTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) <span class="cov8" title="1">{
+        // In a real implementation, this would interact with an inventory system
+        fmt.Println("Packing items for order")
+
+        // Simulate some work
+        time.Sleep(1500 * time.Millisecond)
+
+        return map[string]interface{}{
+                "packed": true,
+                "time":   time.Now().Format(time.RFC3339),
+        }, nil
+}</span>
+
+// SendShippingNotificationTask sends a shipping notification
+type SendShippingNotificationTask struct{}
+
+func (t *SendShippingNotificationTask) Name() string <span class="cov8" title="1">{
+        return "send_shipping_notification"
+}</span>
+
+func (t *SendShippingNotificationTask) Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error) <span class="cov8" title="1">{
+        // In a real implementation, this would send an actual notification
+        fmt.Println("Sending shipping notification")
+
+        // Simulate some work
+        time.Sleep(500 * time.Millisecond)
+
+        return map[string]interface{}{
+                "sent": true,
+                "time": time.Now().Format(time.RFC3339),
+        }, nil
+}</span>
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package tasks
+
+import (
+        "context"
+
+        "github.com/mstgnz/goflow/pkg/models"
+)
+
+// Task is the interface that all tasks must implement
+type Task interface {
+        // Execute runs the task with the given parameters and returns a result
+        Execute(ctx context.Context, params map[string]string, state *models.WorkflowState) (map[string]interface{}, error)
+        // Name returns the name of the task
+        Name() string
+}
+
+// Registry is a registry of all available tasks
+type Registry struct {
+        tasks map[string]Task
+}
+
+// NewRegistry creates a new task registry
+func NewRegistry() *Registry <span class="cov8" title="1">{
+        return &amp;Registry{
+                tasks: make(map[string]Task),
+        }
+}</span>
+
+// Register registers a task with the registry
+func (r *Registry) Register(task Task) <span class="cov8" title="1">{
+        r.tasks[task.Name()] = task
+}</span>
+
+// Get returns a task by name
+func (r *Registry) Get(name string) (Task, bool) <span class="cov8" title="1">{
+        task, ok := r.tasks[name]
+        return task, ok
+}</span>
+
+// List returns a list of all registered task names
+func (r *Registry) List() []string <span class="cov8" title="1">{
+        var names []string
+        for name := range r.tasks </span><span class="cov8" title="1">{
+                names = append(names, name)
+        }</span>
+        <span class="cov8" title="1">return names</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package workflow
+
+import (
+        "context"
+        "encoding/json"
+        "errors"
+        "fmt"
+        "os"
+        "strings"
+        "time"
+
+        "github.com/mstgnz/goflow/pkg/models"
+        "github.com/mstgnz/goflow/pkg/tasks"
+)
+
+// Engine is the core workflow engine
+type Engine struct {
+        taskRegistry *tasks.Registry
+        workflows    map[string]*models.Workflow
+        states       map[string]*models.WorkflowState
+}
+
+// NewEngine creates a new workflow engine
+func NewEngine() *Engine <span class="cov8" title="1">{
+        return &amp;Engine{
+                taskRegistry: tasks.NewRegistry(),
+                workflows:    make(map[string]*models.Workflow),
+                states:       make(map[string]*models.WorkflowState),
+        }
+}</span>
+
+// RegisterTask registers a task with the engine
+func (e *Engine) RegisterTask(task tasks.Task) <span class="cov8" title="1">{
+        e.taskRegistry.Register(task)
+}</span>
+
+// RegisterDefaultTasks registers the default tasks with the engine
+func (e *Engine) RegisterDefaultTasks() <span class="cov8" title="1">{
+        e.RegisterTask(&amp;tasks.SendEmailTask{})
+        e.RegisterTask(&amp;tasks.ProcessPaymentTask{})
+        e.RegisterTask(&amp;tasks.PackItemsTask{})
+        e.RegisterTask(&amp;tasks.SendShippingNotificationTask{})
+        e.RegisterTask(&amp;tasks.ValidateFileTask{})
+        e.RegisterTask(&amp;tasks.ProcessFileTask{})
+        e.RegisterTask(&amp;tasks.SaveToDatabaseTask{})
+}</span>
+
+// Load loads a workflow from a file
+func (e *Engine) Load(filePath string) error <span class="cov8" title="1">{
+        data, err := os.ReadFile(filePath)
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("failed to read workflow file: %w", err)
+        }</span>
+
+        <span class="cov8" title="1">var workflow models.Workflow
+        if strings.HasSuffix(filePath, ".json") </span><span class="cov8" title="1">{
+                err = json.Unmarshal(data, &amp;workflow)
+        }</span> else<span class="cov0" title="0"> {
+                return fmt.Errorf("unsupported file format: %s", filePath)
+        }</span>
+
+        <span class="cov8" title="1">if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("failed to parse workflow file: %w", err)
+        }</span>
+
+        <span class="cov8" title="1">if workflow.Name == "" </span><span class="cov0" title="0">{
+                return errors.New("workflow must have a name")
+        }</span>
+
+        <span class="cov8" title="1">e.workflows[workflow.Name] = &amp;workflow
+        return nil</span>
+}
+
+// Run runs a workflow by name
+func (e *Engine) Run(workflowName string) (*models.WorkflowState, error) <span class="cov8" title="1">{
+        workflow, ok := e.workflows[workflowName]
+        if !ok </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("workflow not found: %s", workflowName)
+        }</span>
+
+        // Create a new workflow state
+        <span class="cov8" title="1">state := &amp;models.WorkflowState{
+                WorkflowName:   workflowName,
+                CompletedSteps: []string{},
+                StepResults:    make(map[string]models.StepResult),
+                StartTime:      time.Now().Unix(),
+                Status:         "running",
+        }
+
+        // Store the state
+        e.states[workflowName] = state
+
+        // Start the workflow execution
+        ctx := context.Background()
+        err := e.executeWorkflow(ctx, workflow, state)
+        if err != nil </span><span class="cov0" title="0">{
+                state.Status = "failed"
+                return state, err
+        }</span>
+
+        <span class="cov8" title="1">state.Status = "completed"
+        state.EndTime = time.Now().Unix()
+        return state, nil</span>
+}
+
+// executeWorkflow executes a workflow
+func (e *Engine) executeWorkflow(ctx context.Context, workflow *models.Workflow, state *models.WorkflowState) error <span class="cov8" title="1">{
+        // Find the first step
+        if len(workflow.Steps) == 0 </span><span class="cov0" title="0">{
+                return errors.New("workflow has no steps")
+        }</span>
+
+        // Start with the first step
+        <span class="cov8" title="1">currentStep := workflow.Steps[0]
+        state.CurrentStep = currentStep.ID
+
+        // Execute steps until there are no more steps to execute
+        for </span><span class="cov8" title="1">{
+                // Execute the current step
+                err := e.executeStep(ctx, workflow, currentStep, state)
+                if err != nil </span><span class="cov0" title="0">{
+                        return fmt.Errorf("failed to execute step %s: %w", currentStep.ID, err)
+                }</span>
+
+                // Mark the step as completed
+                <span class="cov8" title="1">state.CompletedSteps = append(state.CompletedSteps, currentStep.ID)
+
+                // Find the next step to execute
+                nextStepID := e.findNextStep(workflow, currentStep, state)
+                if nextStepID == "" </span><span class="cov8" title="1">{
+                        // No more steps to execute
+                        break</span>
+                }
+
+                // Find the next step
+                <span class="cov8" title="1">var found bool
+                for _, step := range workflow.Steps </span><span class="cov8" title="1">{
+                        if step.ID == nextStepID </span><span class="cov8" title="1">{
+                                currentStep = step
+                                state.CurrentStep = currentStep.ID
+                                found = true
+                                break</span>
+                        }
+                }
+
+                <span class="cov8" title="1">if !found </span><span class="cov0" title="0">{
+                        return fmt.Errorf("step not found: %s", nextStepID)
+                }</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// executeStep executes a single step in a workflow
+func (e *Engine) executeStep(ctx context.Context, workflow *models.Workflow, step models.Step, state *models.WorkflowState) error <span class="cov8" title="1">{
+        // Check if the step has a condition
+        if step.Condition != "" </span><span class="cov8" title="1">{
+                // Evaluate the condition
+                if !e.evaluateCondition(step.Condition, state) </span><span class="cov0" title="0">{
+                        // Condition not met, skip this step
+                        return nil
+                }</span>
+        }
+
+        // Get the task
+        <span class="cov8" title="1">task, ok := e.taskRegistry.Get(step.Task)
+        if !ok </span><span class="cov0" title="0">{
+                return fmt.Errorf("task not found: %s", step.Task)
+        }</span>
+
+        // Execute the task
+        <span class="cov8" title="1">result, err := task.Execute(ctx, step.Params, state)
+        if err != nil </span><span class="cov0" title="0">{
+                // Store the result
+                state.StepResults[step.ID] = models.StepResult{
+                        Success: false,
+                        Error:   err.Error(),
+                }
+                return err
+        }</span>
+
+        // Store the result
+        <span class="cov8" title="1">state.StepResults[step.ID] = models.StepResult{
+                Success: true,
+                Data:    result,
+        }
+
+        return nil</span>
+}
+
+// findNextStep finds the next step to execute
+func (e *Engine) findNextStep(workflow *models.Workflow, currentStep models.Step, state *models.WorkflowState) string <span class="cov8" title="1">{
+        // If there are no next steps, we're done
+        if len(currentStep.Next) == 0 </span><span class="cov8" title="1">{
+                return ""
+        }</span>
+
+        // Get the result of the current step
+        <span class="cov8" title="1">result, ok := state.StepResults[currentStep.ID]
+        if !ok || !result.Success </span><span class="cov0" title="0">{
+                // Step failed or no result, don't continue
+                return ""
+        }</span>
+
+        // Return the first next step
+        <span class="cov8" title="1">return currentStep.Next[0]</span>
+}
+
+// evaluateCondition evaluates a condition
+func (e *Engine) evaluateCondition(condition string, state *models.WorkflowState) bool <span class="cov8" title="1">{
+        // Parse the condition (format: "step.field")
+        parts := strings.Split(condition, ".")
+        if len(parts) != 2 </span><span class="cov8" title="1">{
+                return false
+        }</span>
+
+        <span class="cov8" title="1">stepID := parts[0]
+        field := parts[1]
+
+        // Get the step result
+        result, ok := state.StepResults[stepID]
+        if !ok </span><span class="cov8" title="1">{
+                return false
+        }</span>
+
+        // Check if the field exists and is true
+        <span class="cov8" title="1">value, ok := result.Data[field]
+        if !ok </span><span class="cov8" title="1">{
+                return false
+        }</span>
+
+        // Convert to bool
+        <span class="cov8" title="1">boolValue, ok := value.(bool)
+        if !ok </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov8" title="1">return boolValue</span>
+}
+
+// GetState returns the state of a workflow
+func (e *Engine) GetState(workflowName string) (*models.WorkflowState, bool) <span class="cov8" title="1">{
+        state, ok := e.states[workflowName]
+        return state, ok
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
